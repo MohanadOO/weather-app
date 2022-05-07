@@ -1,15 +1,43 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import WeatherCard from './components/WeatherCard'
 
 function App() {
   const [countryInput, setCountryInput] = useState('')
 
+  //Check if browser supports W3C Geolocation API
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(successFunction, errorFunction)
+    }
+    //Get latitude and longitude;
+    function successFunction(position) {
+      let lat = position.coords.latitude
+      let long = position.coords.longitude
+      console.log(lat, long)
+      fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${
+          import.meta.env.VITE_API_KEY
+        }&units=metric`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setWeatherData(data)
+          handleData(data.name)
+        })
+        .catch((err) => console.error(err))
+    }
+
+    function errorFunction(e) {
+      console.log(e)
+    }
+  }, [])
+
   //City and Weather Data from the API.
   const [cityData, setCityData] = useState('')
   const [weatherData, setWeatherData] = useState('')
 
-  function handleData() {
-    const cityName = countryInput
+  function handleData(name) {
+    const cityName = countryInput || name
     const weatherDataURL = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${
       import.meta.env.VITE_API_KEY
     }&units=metric`
