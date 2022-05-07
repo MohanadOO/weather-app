@@ -1,40 +1,33 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import WeatherCard from './components/WeatherCard'
 
 function App() {
   const [countryInput, setCountryInput] = useState('')
-  const [search, setSearch] = useState('')
 
   //City and Weather Data from the API.
   const [cityData, setCityData] = useState('')
   const [weatherData, setWeatherData] = useState('')
 
   function handleData() {
-    setSearch(countryInput)
+    const cityName = countryInput
+    const weatherDataURL = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${
+      import.meta.env.VITE_API_KEY
+    }&units=metric`
+    const cityDataURL = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${
+      import.meta.env.VITE_API_KEY
+    }`
+
+    fetch(weatherDataURL)
+      .then((res) => res.json())
+      .then((data) => setWeatherData(data))
+      .catch((err) => console.error(err))
+
+    fetch(cityDataURL)
+      .then((res) => res.json())
+      .then((data) => setCityData(data))
+      .catch((err) => console.error(err))
+    setCountryInput('')
   }
-
-  useEffect(() => {
-    if (countryInput !== '') {
-      const cityName = countryInput
-      fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${
-          import.meta.env.VITE_API_KEY
-        }&units=metric`
-      )
-        .then((res) => res.json())
-        .then((data) => setWeatherData(data))
-        .catch((err) => console.error(err))
-
-      fetch(
-        `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${
-          import.meta.env.VITE_API_KEY
-        }`
-      )
-        .then((res) => res.json())
-        .then((data) => setCityData(data))
-        .catch((err) => console.error(err))
-    }
-  }, [search])
 
   return (
     <div className='h-screen bg-[url("/assets/background.webp")] bg-cover relative'>
@@ -47,6 +40,7 @@ function App() {
             type='text'
             placeholder='Enter Location...'
             onChange={(e) => setCountryInput(e.target.value)}
+            onKeyPress={(e) => (e.key === 'Enter' ? handleData() : null)}
             value={countryInput}
             className='rounded-md bg-slate-900 text-white py-2 px-4
         border-[1px] '
