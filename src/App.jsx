@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import WeatherCard from './components/WeatherCard'
 
 function App() {
   const [countryInput, setCountryInput] = useState('')
+  const inputRef = useRef()
 
   //Check if browser supports W3C Geolocation API
   useEffect(() => {
+    inputRef.current.focus()
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(successFunction, errorFunction)
     }
@@ -13,7 +15,6 @@ function App() {
     function successFunction(position) {
       let lat = position.coords.latitude
       let long = position.coords.longitude
-      console.log(lat, long)
       fetch(
         `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${
           import.meta.env.VITE_API_KEY
@@ -65,6 +66,7 @@ function App() {
         </h1>
         <div className='mx-auto justify-center items-center flex flex-col sm:flex-row gap-4'>
           <input
+            ref={inputRef}
             type='text'
             placeholder='Enter Location...'
             onChange={(e) => setCountryInput(e.target.value)}
@@ -80,22 +82,25 @@ function App() {
             Search
           </button>
         </div>
-
         {cityData === '' || weatherData === '' ? (
           <p className='text-2xl text-white md:text-slate-900 md:text-3xl font-bold rounded-md'>
             Check your city weather ⛅
           </p>
-        ) : weatherData.cod.toString().includes('40') ? (
+        ) : weatherData.cod.toString().includes('4') ? (
           <p className='text-2xl text-white md:text-slate-900 md:text-3xl font-bold'>
             No City Found ❌
           </p>
-        ) : (
+        ) : cityData[0] !== undefined ? (
           <WeatherCard
             city={cityData[0].name}
-            arabic_name={cityData[0].local_names.ar}
+            arabic_name={
+              cityData[0].local_names !== undefined
+                ? cityData[0].local_names.ar
+                : ''
+            }
             weather={weatherData}
           />
-        )}
+        ) : null}
       </div>
     </div>
   )
