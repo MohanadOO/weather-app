@@ -60,7 +60,7 @@ function WeatherCard(props) {
               alt={weather[0].main}
             />
             <p>
-              {temp} C<sup>o</sup>
+              {temp.toFixed()} C<sup>o</sup>
             </p>
           </div>
           <div>
@@ -77,7 +77,7 @@ function WeatherCard(props) {
         <div className='text-center p-3'>
           <h3 className='mb-2 font-bold text-base sm:text-lg'>Feels Like</h3>
           <p>
-            {feels_like} C<sup>o</sup>
+            {feels_like.toFixed()} C<sup>o</sup>
           </p>
         </div>
         <div className='text-center p-3'>
@@ -86,7 +86,7 @@ function WeatherCard(props) {
         </div>
         <div className='text-center p-3'>
           <h3 className='mb-2 font-bold text-base sm:text-lg'>Winds</h3>
-          <p>{speed} MPH</p>
+          <p>{speed.toFixed()} MPH</p>
         </div>
       </div>
     </>
