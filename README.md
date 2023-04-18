@@ -1,6 +1,6 @@
 # Weather App ☁️
 
-This is a simple Weather Application created using the Weather API [OpenWeater](https://openweathermap.org/api)  to get the today weather of the chosen city.
+This is a simple Weather Application created using the Weather API [OpenWeather](https://openweathermap.org/api) to get the today's weather of the chosen city.
 
 ## Table of contents
 
